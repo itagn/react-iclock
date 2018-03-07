@@ -1,0 +1,153 @@
+  .iclock{
+    position: relative;
+    display: inline-block;
+    width: 200px;
+  }
+  .iclock > .iclock-show{
+    position: relative;
+    width: 97%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    user-select: all;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .iclock-time > .iclock-date, .iclock-week{
+    position: absolute;
+    top: -14px;
+    font-size: 14px;
+    user-select: all;
+    cursor: pointer;
+  }
+  .iclock-time > .iclock-date{
+    right: 0;
+  }
+  .iclock-time > .iclock-week{
+    left: 0;
+  }
+  .iclock > .iclock-body{
+    position: relative;
+    width: 100%;
+    height: 100px;
+    border-radius: 2%;
+    border: 2px solid #22ade4;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  .iclock-body:hover .iclock-mouse{
+    animation: ppp 0.75s infinite;
+    -webkit-animation: ppp 0.75s infinite;
+  }
+  .iclock-body .glasses{
+    position: absolute;
+    top: -8px;
+    left: 8px;
+    z-index: 2;
+  }
+  .glasses-left, .glasses-right{
+    position: absolute;
+    top: 0;
+    width: 70px;
+    height: 30px;
+    border: 3px solid #000;
+    border-radius: 10%;
+    display: inline-block;
+    background-color: transparent;
+  }
+  .glasses > .glasses-mid{
+    position: absolute;
+    top: 30px;
+    left: 60px;
+    width: 40px;
+    height: 3px;
+    background-color: #000;
+    display: inline-block;
+  }
+  .glasses > .glasses-left{
+    left: 0;
+  }
+  .glasses >.glasses-right{
+    left: 90px;
+  }
+  .iclock-left-eyes, .iclock-right-eyes{
+    position: absolute;
+    top: 15px;
+    width: 60px;
+    height: 6px;
+    background-color: #22ade4;
+  }
+  .iclock-body > .iclock-left-eyes{
+    left: 20px;
+    transform: rotate(10deg);
+    -webkit-transform: rotate(10deg);
+  }
+  .iclock-body > .iclock-right-eyes{
+    right: 20px;
+    transform: rotate(-10deg);
+    -webkit-transform: rotate(-10deg);
+  }
+  .iclock-body > .iclock-right-box{
+    position: absolute;
+    top: 0;
+    right: -50px;
+    width: 50px;
+    height: 100%;
+    overflow: hidden;
+  }
+  .iclock-right-box > .iclock-cup{
+    position: absolute;
+    top: 20px;
+    right: 0;
+    border: 4px solid #22ade4;
+    border-radius: 50%;
+    width: 80px;
+    height: 60px;
+  }
+  .iclock-body > .iclock-mouse{
+    position: relative;
+    left: 20px;
+    top: 40px;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+  @keyframes ddd {
+    0%   { transform: scale(1) }
+    50%  { transform: scale(1.2) }
+    100% { transform: scale(1) }
+  }
+  @-webkit-keyframes ddd {
+    0%   { -webkit-transform: scale(1) }
+    50%  { -webkit-transform: scale(1.2) }
+    100% { -webkit-transform: scale(1) }
+  }
+  @keyframes ppp {
+    0% { transform: scale(1) }
+    10% { transform: scale(1.2) }
+    20% { transform: scale(1.1) }
+    30% { transform: scale(1.2) }
+    40% { transform: scale(1.1) }
+    50% { transform: scale(1.2) }
+    60% { transform: scale(1.1) }
+    70% { transform: scale(1.2) }
+    80% { transform: scale(1.1) }
+    90% { transform: scale(1.2) }
+    100% { transform: scale(0.9) }
+  }
+  @-webkit-keyframes ppp {
+    0% { -webkit-transform: scale(1) }
+    10% { -webkit-transform: scale(1.2) }
+    20% { -webkit-transform: scale(1.1) }
+    30% { -webkit-transform: scale(1.2) }
+    40% { -webkit-transform: scale(1.1) }
+    50% { -webkit-transform: scale(1.2) }
+    60% { -webkit-transform: scale(1.1) }
+    70% { -webkit-transform: scale(1.2) }
+    80% { -webkit-transform: scale(1.1) }
+    90% { -webkit-transform: scale(1.2) }
+    100% { -webkit-transform: scale(0.9) }
+  }
+  

@@ -1,0 +1,23 @@
+{
+  "name": "react-iclock",
+  "version": "0.0.1",
+  "description": "a cute clock components with ReactJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itagn/react-iclock.git"
+  },
+  "keywords": [
+    "react",
+    "clock"
+  ],
+  "author": "itagn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/itagn/react-iclock/issues"
+  },
+  "homepage": "https://github.com/itagn/react-iclock#readme"
+}
