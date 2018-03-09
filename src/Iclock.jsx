@@ -47,21 +47,20 @@ class Iclock extends Component {
             dateColor
         }
     }
-    async componentWillMount(){
-        await this.initData();
+    componentWillMount(){
+        this.initData();
     }
-    async componentDidMount(){
-        console.log(this.state)
+    componentDidMount(){
         const clock = document.querySelector(`${this.state.className} .iclock`);
         if(clock){
-            let tf = await this.checkError()
+            let tf = this.checkError();
             if(tf){
                 this.initStyle();
-                await this.checkType();
+                this.checkType();
                 this.checkEmoji();
             }
         } else {
-            await this.errTip('Error: props[display].className of dom does not exist!')
+            this.errTip('Error: props[display].className of dom does not exist!')
         }
     }
     setStateAsync(state){
@@ -94,9 +93,7 @@ class Iclock extends Component {
                         }
                     </div>
                     <div className="iclock-body">
-                        {
-                        this.state.glasses && <Glasses />
-                        }
+                        { this.state.glasses && <Glasses /> }
                         <div className="iclock-left-eyes"></div>
                         <div className="iclock-right-eyes"></div>
                         <div className="iclock-right-box">
@@ -108,26 +105,26 @@ class Iclock extends Component {
             </div>
         )
     }
-    async initData(){
-        let time = await this.getTime(), date = this.getDate().date, week = this.getDate().week;
-        await this.setStateAsync({
+    initData(){
+        let time = this.getTime(), date = this.getDate().date, week = this.getDate().week;
+        this.setStateAsync({
             show: time,
             date: date,
             week: week
         })
     }
-    async checkError(){
+    checkError(){
         let tf = true;
         if(this.state.type !== 'clock' && this.state.type !== 'text'){
-            await this.errTip('Error: props[display].type should be "clock" or "text".');
+            this.errTip('Error: props[display].type should be "clock" or "text".');
             tf = false;
         }
         if(this.state.mode !== 'default' && this.state.mode !== 'scroll'){
-            await this.errTip('Error: props[display].type should be "default" or "scroll".');
+            this.errTip('Error: props[display].type should be "default" or "scroll".');
             tf = false;
         }
         if(this.state.emoji !== 'smile' && this.state.emoji !== 'angry' && this.state.emoji !== 'jiong'){
-            await this.errTip('Error: props[display].emoji should be "smile", "angry" or "jiong".');
+            this.errTip('Error: props[display].emoji should be "smile", "angry" or "jiong".');
             tf = false;
         }
         return tf;
@@ -141,7 +138,7 @@ class Iclock extends Component {
         dom.style.color = this.state.fontColor;
         dom.style.fontSize = this.state.fontSize;
     }
-    async checkType(){
+    checkType(){
       if(this.state.type === 'clock'){
         const date = document.querySelector(`${this.state.className} .iclock .iclock-date`);
         const week = document.querySelector(`${this.state.className} .iclock .iclock-week`);
@@ -149,8 +146,9 @@ class Iclock extends Component {
         week.style.color = this.state.dateColor;
         this.loop();
       } else if(this.state.type === 'text'){
-        await this.setStateAsync({
-            show: this.state.info
+          let info = this.state.info;
+        this.setState({
+            show: info
         });
       }
     }
@@ -164,7 +162,7 @@ class Iclock extends Component {
             this.jiong(mouse);
         }
     }
-    async errTip(str){
+    errTip(str){
         if(this.state.interval){
             clearInterval(this.state.interval);
         }
@@ -177,12 +175,12 @@ class Iclock extends Component {
             const scroll = document.querySelector(".iclock .iclock-scroll");
             scroll.style.display = 'none';
         }
-        await this.setStateAsync({
+        this.setStateAsync({
             show: "Error~"
         });
         console.error(str);
     }
-    async getTime(){
+    getTime(){
         const dates = new Date();
         let h = dates.getHours()+'';
         h = h.length === 2 ? h : `0${h}`;
@@ -194,7 +192,7 @@ class Iclock extends Component {
         if(this.state.mode === 'default'){
             return `${h}:${m}:${s}`;
         } else if(this.state.mode === 'scroll') {
-            await this.setStateAsync({
+            this.setStateAsync({
                 hf: `num num${h[0]}`,
                 hs: `num num${h[1]}`,
                 mf: `num num${m[0]}`,
@@ -219,16 +217,25 @@ class Iclock extends Component {
         }
         return { date, week };
     }
-    async loop(){
+    loop(){
+        const that = this;
         if (this.state.mode === 'scroll'){
             const dom = document.querySelector(".iclock .iclock-info");
             dom.style.display = 'none';
+            this.setStateAsync({
+                interval: setInterval(() => {
+                    this.getTime();
+                }, 1000)
+            })
+        } else if (this.state.mode === 'default'){
+            this.setStateAsync({
+                interval: setInterval(() => {
+                    that.setStateAsync({
+                        show: that.getTime()
+                    });
+                }, 1000)
+            })
         }
-        await this.setStateAsync({
-            interval: setInterval(() => {
-                this.getTime();
-            }, 1000)
-        })
     }
     smile(mouse){
         mouse.style.borderTop = '80px solid #ccc';
