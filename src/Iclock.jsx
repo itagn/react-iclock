@@ -1,48 +1,97 @@
 import React, { Component } from 'react';
 import './styles/Iclock.css';
 import Glasses from './components/Glasses';
-import Time from './components/Time';
+import Timer from './components/Time';
+import png from './source/time.png'
 
 class Iclock extends Component {
     constructor(props){
         super(props);
+        let {
+            type = 'clock',
+            mode = 'default',
+            language = 'en',
+            emoji = 'smile',
+            glasses = false,
+            scale = 1,
+            info = 'o w o',
+            fontSize = '1.5rem',
+            fontColor = 'orange',
+            fontStyle = "Helvetica,'Microsoft YaHei'",
+            dateColor = '#999',
+            className = ''
+        } = props.display;
+
         this.state = {
             week: '',
             date: '',
             show: '',
-            language: props.display.language || 'en',
-            emoji: props.display.emoji || 'smile',
-            className: props.display.className || '',
-            glasses: props.display.glasses || false,
-            scale: props.display.scale || 1,
-            type: props.display.type || 'clock',
-            info: props.display.info || 'o w o',
-            fontSize: props.display.fontSize || '1.5rem',
-            fontColor: props.display.fontColor || 'orange',
-            fontStyle: props.display.fontStyle || "Helvetica,'Microsoft YaHei'",
-            dateColor: props.display.dateColor || '#999'
+            interval: null,
+            hf: 'num num0',
+            hs: 'num num0',
+            mf: 'num num0',
+            ms: 'num num0',
+            sf: 'num num0',
+            ss: 'num num0',
+            type,
+            mode,
+            language,
+            emoji,
+            className,
+            glasses,
+            scale,
+            info,
+            fontSize,
+            fontColor,
+            fontStyle,
+            dateColor
         }
     }
-    componentWillMount(){
-        this.initData();
+    async componentWillMount(){
+        await this.initData();
     }
-    componentDidMount(){
-        var clock = document.querySelector(this.state.className + " .iclock");
+    async componentDidMount(){
+        console.log(this.state)
+        const clock = document.querySelector(`${this.state.className} .iclock`);
         if(clock){
-            this.initStyle();
-            this.checkType();
-            this.checkEmoji();
+            let tf = await this.checkError()
+            if(tf){
+                this.initStyle();
+                await this.checkType();
+                this.checkEmoji();
+            }
         } else {
-            this.errTip('Error: props[display].className of dom does not exist!')
+            await this.errTip('Error: props[display].className of dom does not exist!')
         }
+    }
+    setStateAsync(state){
+        return new Promise((resolve, reject) => {
+            this.setState(state, resolve);
+        })
     }
     render(){
         return (
             <div>
                 <div className="iclock">
-                    { (this.state.type === 'clock') && <Time week={this.state.week} date={this.state.date} /> }
+                    { (this.state.type === 'clock') && <Timer week={this.state.week} date={this.state.date} /> }
                     <div className="iclock-show">
-                        { this.state.show }
+                        <div className="iclock-info" >
+                            { this.state.show }
+                        </div>
+                        {
+                            (this.state.type==='clock' && this.state.mode==='scroll') && (
+                                <div className="iclock-scroll">
+                                    <img src={png} alt="hours-first" className={this.state.hf} />
+                                    <img src={png} alt="hours-second" className={this.state.hs} />
+                                    <span> * </span>
+                                    <img src={png} alt="minutes-first" className={this.state.mf} />
+                                    <img src={png} alt="minutes-second" className={this.state.ms} />
+                                    <span> * </span>
+                                    <img src={png} alt="seconds-first" className={this.state.sf} />
+                                    <img src={png} alt="seconds-second" className={this.state.ss} />
+                                </div>
+                            )
+                        }
                     </div>
                     <div className="iclock-body">
                         {
@@ -59,92 +108,127 @@ class Iclock extends Component {
             </div>
         )
     }
-    initData(){
-        var time = this.getDate().time, date = this.getDate().date, week = this.getDate().week;
-        this.setState({
+    async initData(){
+        let time = await this.getTime(), date = this.getDate().date, week = this.getDate().week;
+        await this.setStateAsync({
             show: time,
             date: date,
             week: week
         })
     }
-    initStyle(){
-      var clock = document.querySelector(this.state.className + " .iclock");
-      clock.style.transform = "scale("+this.state.scale+")";
-      clock.style.webkitTransform = "scale("+this.state.scale+")";
-      clock.style.fontFamily = this.state.fontStyle;
-      var dom = document.querySelector(this.state.className + " .iclock .iclock-show");
-      dom.style.color = this.state.fontColor;
-      dom.style.fontSize = this.state.fontSize;
+    async checkError(){
+        let tf = true;
+        if(this.state.type !== 'clock' && this.state.type !== 'text'){
+            await this.errTip('Error: props[display].type should be "clock" or "text".');
+            tf = false;
+        }
+        if(this.state.mode !== 'default' && this.state.mode !== 'scroll'){
+            await this.errTip('Error: props[display].type should be "default" or "scroll".');
+            tf = false;
+        }
+        if(this.state.emoji !== 'smile' && this.state.emoji !== 'angry' && this.state.emoji !== 'jiong'){
+            await this.errTip('Error: props[display].emoji should be "smile", "angry" or "jiong".');
+            tf = false;
+        }
+        return tf;
     }
-    checkType(){
+    initStyle(){
+        const clock = document.querySelector(`${this.state.className} .iclock`);
+        clock.style.transform = `scale(${this.state.scale})`;
+        clock.style.webkitTransform = `scale(${this.state.scale})`;
+        clock.style.fontFamily = this.state.fontStyle;
+        const dom = document.querySelector(`${this.state.className} .iclock .iclock-show`);
+        dom.style.color = this.state.fontColor;
+        dom.style.fontSize = this.state.fontSize;
+    }
+    async checkType(){
       if(this.state.type === 'clock'){
-        var date = document.querySelector(this.state.className + " .iclock .iclock-date");
-        var week = document.querySelector(this.state.className + " .iclock .iclock-week");
+        const date = document.querySelector(`${this.state.className} .iclock .iclock-date`);
+        const week = document.querySelector(`${this.state.className} .iclock .iclock-week`);
         date.style.color = this.state.dateColor;
         week.style.color = this.state.dateColor;
         this.loop();
       } else if(this.state.type === 'text'){
-        this.setState({
+        await this.setStateAsync({
             show: this.state.info
         });
-      } else {
-        this.errTip('Error: props[display].type should be "clock" or "text".');
       }
     }
     checkEmoji(){
-      var mouse = document.querySelector(this.state.className + " .iclock .iclock-body .iclock-mouse");
-      if(this.state.emoji === 'smile'){
-        this.smile(mouse);
-      } else if (this.state.emoji === 'angry'){
-        this.angry(mouse);
-      } else if (this.state.emoji === 'jiong'){
-        this.jiong(mouse);
-      } else {
-        this.errTip('Error: props[display].emoji should be "smile", "angry" or "jiong".');
-      }
+        const mouse = document.querySelector(`${this.state.className} .iclock .iclock-body .iclock-mouse`);
+        if(this.state.emoji === 'smile'){
+            this.smile(mouse);
+        } else if (this.state.emoji === 'angry'){
+            this.angry(mouse);
+        } else if (this.state.emoji === 'jiong'){
+            this.jiong(mouse);
+        }
     }
-    errTip(str){
-        this.setState({
-            show: "Error~"
-        });
-        var dom = document.querySelector(".iclock .iclock-show");
+    async errTip(str){
+        if(this.state.interval){
+            clearInterval(this.state.interval);
+        }
+        const dom = document.querySelector(".iclock .iclock-info");
         dom.style.color = '#c23531';
         dom.style.fontSize = this.state.fontSize;
         dom.style.fontFamily = this.state.fontStyle;
+        if(this.state.type === 'clock' && this.state.mode === 'scroll'){
+            dom.style.display = 'block';
+            const scroll = document.querySelector(".iclock .iclock-scroll");
+            scroll.style.display = 'none';
+        }
+        await this.setStateAsync({
+            show: "Error~"
+        });
         console.error(str);
     }
-    getDate(){
-      var dates = new Date();
-      var h = dates.getHours()+'';
-      h = h.length === 2 ? h : '0'+h;
-      var m = dates.getMinutes()+'';
-      m = m.length === 2 ? m : '0'+m;
-      var s = dates.getSeconds()+'';
-      s = s.length === 2 ? s : '0'+s;
-      var time = h+':'+m+':'+s;
-      var y = dates.getFullYear();
-      var mn = dates.getMonth() + 1;
-      var d = dates.getDate();
-      var date;
-      var week = dates.getDay();
-      if(this.state.language === 'zh') {
-        var zh = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-        week = zh[week % 7];
-        date = y+'/'+mn+'/'+d;
-      } else {
-        var en = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        week = en[week%7];
-        date = mn+'/'+d+'/'+y;
-      }
-      return { date, time, week };
+    async getTime(){
+        const dates = new Date();
+        let h = dates.getHours()+'';
+        h = h.length === 2 ? h : `0${h}`;
+        let m = dates.getMinutes()+'';
+        m = m.length === 2 ? m : `0${m}`;
+        let s = dates.getSeconds()+'';
+        s = s.length === 2 ? s : `0${s}`;
+
+        if(this.state.mode === 'default'){
+            return `${h}:${m}:${s}`;
+        } else if(this.state.mode === 'scroll') {
+            await this.setStateAsync({
+                hf: `num num${h[0]}`,
+                hs: `num num${h[1]}`,
+                mf: `num num${m[0]}`,
+                ms: `num num${m[1]}`,
+                sf: `num num${s[0]}`,
+                ss: `num num${s[1]}`
+            });
+        }
     }
-    loop(){
-        var _this = this;
-        setInterval(function () {
-            _this.setState({
-                show: _this.getDate().time
-            })
-        }, 1000)
+    getDate(){
+        const dates = new Date();
+        let y = dates.getFullYear(), m = dates.getMonth() + 1, d = dates.getDate();
+        let date, week = dates.getDay();
+        if(this.state.language === 'zh') {
+            let zh = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            week = zh[week % 7];
+            date =`${y}/${m}/${d}`;
+        } else {
+            let en = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            week = en[week%7];
+            date = `${m}/${d}/${y}`;
+        }
+        return { date, week };
+    }
+    async loop(){
+        if (this.state.mode === 'scroll'){
+            const dom = document.querySelector(".iclock .iclock-info");
+            dom.style.display = 'none';
+        }
+        await this.setStateAsync({
+            interval: setInterval(() => {
+                this.getTime();
+            }, 1000)
+        })
     }
     smile(mouse){
         mouse.style.borderTop = '80px solid #ccc';
@@ -156,8 +240,8 @@ class Iclock extends Component {
         mouse.style.borderRadius = '10%';
     }
     jiong(mouse){
-        var leftEye = document.querySelector(this.state.className + " .iclock .iclock-body .iclock-left-eyes");
-        var rightEye = document.querySelector(this.state.className + " .iclock .iclock-body .iclock-right-eyes");
+        const leftEye = document.querySelector(`${this.state.className} .iclock .iclock-body .iclock-left-eyes`);
+        const rightEye = document.querySelector(`${this.state.className} .iclock .iclock-body .iclock-right-eyes`);
         leftEye.style.transform = 'rotate(-10deg)';
         leftEye.style.webkitTransform = 'rotate(-10deg)';
         rightEye.style.transform = 'rotate(10deg)';

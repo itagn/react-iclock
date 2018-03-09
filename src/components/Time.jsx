@@ -2,17 +2,12 @@ import React, { Component } from 'react';
 
 class Time extends Component {
     constructor(props){
-        super(props)
+        super(props);
+        let { week = '', date = '' } = props;
         this.state = {
-            week: '',
-            date: ''
+            week,
+            date
         }
-    }
-    componentWillMount(){
-        this.setState({
-            week: this.props.week,
-            date: this.props.date
-        })
     }
     render(){
         return (
