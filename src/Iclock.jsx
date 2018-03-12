@@ -9,7 +9,6 @@ class Iclock extends Component {
         super(props);
         let {
             type = 'clock',
-            mode = 'default',
             language = 'en',
             emoji = 'smile',
             glasses = false,
@@ -34,7 +33,6 @@ class Iclock extends Component {
             sf: 'num num0',
             ss: 'num num0',
             type,
-            mode,
             language,
             emoji,
             className,
@@ -48,7 +46,10 @@ class Iclock extends Component {
         }
     }
     componentWillMount(){
-        this.initData();
+        this.setStateAsync({
+            show: this.getTime()
+        });
+        this.initDate();
     }
     componentDidMount(){
         const clock = document.querySelector(`${this.state.className} .iclock`);
@@ -72,13 +73,15 @@ class Iclock extends Component {
         return (
             <div>
                 <div className="iclock">
-                    { (this.state.type === 'clock') && <Timer week={this.state.week} date={this.state.date} /> }
+                    {(this.state.type === 'clock' || this.state.type === 'scroll') && (
+                        <Timer week={this.state.week} date={this.state.date}/> )
+                    }
                     <div className="iclock-show">
                         <div className="iclock-info" >
                             { this.state.show }
                         </div>
                         {
-                            (this.state.type==='clock' && this.state.mode==='scroll') && (
+                            (this.state.type==='scroll') && (
                                 <div className="iclock-scroll">
                                     <img src={png} alt="hours-first" className={this.state.hf} />
                                     <img src={png} alt="hours-second" className={this.state.hs} />
@@ -96,31 +99,25 @@ class Iclock extends Component {
                         { this.state.glasses && <Glasses /> }
                         <div className="iclock-left-eyes"></div>
                         <div className="iclock-right-eyes"></div>
-                        <div className="iclock-right-box">
+                        <div className="iclock-right-box"></div>
                         <div className="iclock-cup"></div>
-                        </div>
                         <div className="iclock-mouse"></div>
                     </div>
                 </div>
             </div>
         )
     }
-    initData(){
-        let time = this.getTime(), date = this.getDate().date, week = this.getDate().week;
+    initDate(){
+        let date = this.getDate().date, week = this.getDate().week;
         this.setStateAsync({
-            show: time,
             date: date,
             week: week
-        })
+        });
     }
     checkError(){
         let tf = true;
-        if(this.state.type !== 'clock' && this.state.type !== 'text'){
-            this.errTip('Error: props[display].type should be "clock" or "text".');
-            tf = false;
-        }
-        if(this.state.mode !== 'default' && this.state.mode !== 'scroll'){
-            this.errTip('Error: props[display].type should be "default" or "scroll".');
+        if(this.state.type !== 'clock' && this.state.type !== 'text' && this.state.type !=='scroll'){
+            this.errTip('Error: props[display].type should be "clock", "text" or "scroll".');
             tf = false;
         }
         if(this.state.emoji !== 'smile' && this.state.emoji !== 'angry' && this.state.emoji !== 'jiong'){
@@ -139,7 +136,7 @@ class Iclock extends Component {
         dom.style.fontSize = this.state.fontSize;
     }
     checkType(){
-      if(this.state.type === 'clock'){
+      if(this.state.type === 'clock' || this.state.type === 'scroll'){
         const date = document.querySelector(`${this.state.className} .iclock .iclock-date`);
         const week = document.querySelector(`${this.state.className} .iclock .iclock-week`);
         date.style.color = this.state.dateColor;
@@ -170,7 +167,7 @@ class Iclock extends Component {
         dom.style.color = '#c23531';
         dom.style.fontSize = this.state.fontSize;
         dom.style.fontFamily = this.state.fontStyle;
-        if(this.state.type === 'clock' && this.state.mode === 'scroll'){
+        if(this.state.type === 'scroll'){
             dom.style.display = 'block';
             const scroll = document.querySelector(".iclock .iclock-scroll");
             scroll.style.display = 'none';
@@ -189,9 +186,9 @@ class Iclock extends Component {
         let s = dates.getSeconds()+'';
         s = s.length === 2 ? s : `0${s}`;
 
-        if(this.state.mode === 'default'){
+        if(this.state.type === 'clock'){
             return `${h}:${m}:${s}`;
-        } else if(this.state.mode === 'scroll') {
+        } else if(this.state.type === 'scroll') {
             this.setStateAsync({
                 hf: `num num${h[0]}`,
                 hs: `num num${h[1]}`,
@@ -219,17 +216,19 @@ class Iclock extends Component {
     }
     loop(){
         const that = this;
-        if (this.state.mode === 'scroll'){
+        if (this.state.type === 'scroll'){
             const dom = document.querySelector(".iclock .iclock-info");
             dom.style.display = 'none';
             this.setStateAsync({
                 interval: setInterval(() => {
+                    this.initDate();
                     this.getTime();
                 }, 1000)
             })
-        } else if (this.state.mode === 'default'){
+        } else if (this.state.type === 'clock'){
             this.setStateAsync({
                 interval: setInterval(() => {
+                    that.initDate();
                     that.setStateAsync({
                         show: that.getTime()
                     });

@@ -18,11 +18,15 @@ Try to move the mouse to the face.
 
 ![text.png](https://github.com/itagn/react-iclock/raw/master/img/text.png)
 
-    if you want to change the expression, and set display.emoji = 'angry' or 'jiong'
+    if you want a scrolling clock, and you should set display.type = 'scroll'
+
+![scroll.png](https://github.com/itagn/react-iclock/raw/master/img/scroll.png)
+
+    if you want to change the expression, and you should set display.emoji = 'angry' or 'jiong'
 
 ![angry.png](https://github.com/itagn/react-iclock/raw/master/img/angry.png) ![jiong.png](https://github.com/itagn/react-iclock/raw/master/img/jiong.png)
 
-    let the cute clock wears glasses, and set display.glasses = true
+    let the cute clock wears glasses, and you should set display.glasses = true
 
 ![glasses.png](https://github.com/itagn/react-iclock/raw/master/img/glasses.png)
 
@@ -69,7 +73,7 @@ In order to judge display clock or text by setting display
 
     Type: Object
     Default: {
-        type: 'clock',  //  value: 'clock' || 'text'
+        type: 'clock',  //  value: 'clock' || 'text' || 'scroll'
         info: 'o w o',  //  if this.type is 'text', and show this.info
         className: '',  //  set className when more than one iclock component on the page
         scale: 1,  //  Magnification
