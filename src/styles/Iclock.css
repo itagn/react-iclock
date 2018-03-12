@@ -32,11 +32,14 @@
 .iclock-scroll{
   position: absolute;
   top: 5px;
-  left: 18px;
+  left: 30px;
   margin: 0;
 }
 .iclock-scroll span{
-  font-size: 2rem;
+  font-size: 1.3rem;
+  position: relative;
+  top: -14px;
+  font-weight: 900;
 }
 .iclock-scroll .num, .iclock-scroll span {
   margin-left: 5px;
