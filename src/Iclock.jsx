@@ -85,10 +85,10 @@ class Iclock extends Component {
                                 <div className="iclock-scroll">
                                     <img src={png} alt="hours-first" className={this.state.hf} />
                                     <img src={png} alt="hours-second" className={this.state.hs} />
-                                    <span> * </span>
+                                    <span> : </span>
                                     <img src={png} alt="minutes-first" className={this.state.mf} />
                                     <img src={png} alt="minutes-second" className={this.state.ms} />
-                                    <span> * </span>
+                                    <span> : </span>
                                     <img src={png} alt="seconds-first" className={this.state.sf} />
                                     <img src={png} alt="seconds-second" className={this.state.ss} />
                                 </div>
