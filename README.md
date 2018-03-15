@@ -52,6 +52,7 @@ var dis = {
     type: 'clock',
     className: '.clock',
     emoji: 'smile',
+    hoverAnimation: true,
     glasses: false
 }
 class App extends Component {
@@ -79,6 +80,7 @@ In order to judge display clock or text by setting display
         scale: 1,  //  Magnification
         emoji: 'smile',  //  value: 'smile' || 'angry' || 'jiong'
         glasses: false,  //  Choose whether to wear glasses
+        hoverAnimation: fasle,  //  Choose whether to open animation of clock
         language: 'en',  //  language
         dateColor: '#999',  //  set date-color
         fontColor: 'orange',  //  set font-color

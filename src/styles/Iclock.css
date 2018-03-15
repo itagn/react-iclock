@@ -10,7 +10,6 @@
   line-height: 50px;
   text-align: center;
   user-select: all;
-  /*overflow: hidden;*/
   text-overflow:ellipsis;
   white-space: nowrap;
   cursor: pointer;
@@ -72,10 +71,10 @@
   background-color: #fff;
   cursor: pointer;
 }
-.iclock-body:hover .iclock-mouse{
-  animation: ppp 0.75s infinite;
-  -webkit-animation: ppp 0.75s infinite;
-}
+/*.iclock-body:hover .iclock-mouse{*/
+  /*animation: ppp 0.75s infinite;*/
+  /*-webkit-animation: ppp 0.75s infinite;*/
+/*}*/
 .iclock-body .glasses{
   position: absolute;
   top: -8px;
