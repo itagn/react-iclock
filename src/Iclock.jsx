@@ -12,6 +12,7 @@ class Iclock extends Component {
             language = 'en',
             emoji = 'smile',
             glasses = false,
+            hoverAnimation = false,
             scale = 1,
             info = 'o w o',
             fontSize = '1.5rem',
@@ -37,6 +38,7 @@ class Iclock extends Component {
             emoji,
             className,
             glasses,
+            hoverAnimation,
             scale,
             info,
             fontSize,
@@ -127,36 +129,26 @@ class Iclock extends Component {
         return tf;
     }
     initStyle(){
-      const that = this;
-      const clockDom = document.querySelector(`${this.className} .iclock`);
-      this.objVal({
-        transform: `scale(${this.scale})`,
-        webkitTransform: `scale(${this.scale})`,
-        fontFamily: that.fontStyle
-      }, clockDom);
-      const showDom = document.querySelector(`${this.className} .iclock .iclock-show`);
-      this.objVal({
-        color:　that.fontColor,
-        fontSize: that.fontSize
-      }, showDom);
+      const clockDom = document.querySelector(`${this.state.className} .iclock`);
+      clockDom.style.transform = `scale(${this.state.scale})`;
+      clockDom.style.webkitTransform = `scale(${this.state.scale})`;
+      clockDom.style.fontFamily = this.state.fontStyle;
+      const showDom = document.querySelector(`${this.state.className} .iclock .iclock-show`);
+      showDom.style.color = this.state.fontColor;
+      showDom.style.fontSize = this.state.fontSize;
       this.checkAnimation();
     }
     checkAnimation(){
-      const that = this;
-      if(this.hoverAnimation){
-        const bodyDom = document.querySelector(`${this.className} .iclock .iclock-body`);
-        const mouseDom = document.querySelector(`${this.className} .iclock .iclock-mouse`);
+      if(this.state.hoverAnimation){
+        const bodyDom = document.querySelector(`${this.state.className} .iclock .iclock-body`);
+        const mouseDom = document.querySelector(`${this.state.className} .iclock .iclock-mouse`);
         let animationName = 'ppp', animationTime = '0.75s';
         this.domHover(bodyDom, function () {
-          that.objVal({
-            animation: `${animationName} ${animationTime} infinite`,
-            webkitAnimation: `${animationName} ${animationTime} infinite`
-          }, mouseDom);
+          mouseDom.style.animation = `${animationName} ${animationTime} infinite`;
+          mouseDom.style.webkitAnimation = `${animationName} ${animationTime} infinite`;
         }, function () {
-          that.objVal({
-            animation: ``,
-            webkitAnimation: ``
-          }, mouseDom);
+          mouseDom.style.animation = ``;
+          mouseDom.style.webkitAnimation = ``;
         })
       }
     }
@@ -189,11 +181,9 @@ class Iclock extends Component {
             clearInterval(this.state.interval);
         }
         const infoDom = document.querySelector(".iclock .iclock-info");
-        this.objVal({
-          color: '#c23531',
-          fontSize: that.fontSize,
-          fontFamily: that.fontStyle
-        }, infoDom);
+        infoDom.style.color = '#c23531';
+        infoDom.style.fontSize = this.state.fontSize;
+        infoDom.style.fontFamily = this.state.fontStyle
         if(this.state.type === 'scroll'){
             infoDom.style.display = 'block';
             const scroll = document.querySelector(".iclock .iclock-scroll");
@@ -245,11 +235,6 @@ class Iclock extends Component {
       dom.onmouseenter = fnOver;
       dom.onmouseleave = fnOut;
     }
-    objVal(obj, dom){
-      Object.keys(obj).forEach(val => {
-        dom.style[val] = obj[val];
-      })
-    }
     loop(){
         const that = this;
         if (this.state.type === 'scroll'){
@@ -273,58 +258,26 @@ class Iclock extends Component {
         }
     }
     smile(mouseDom){
-        this.objVal({
-          borderTop: '80px solid #ccc',
-          borderLeft: '80px solid transparent',
-          borderRight: '80px solid transparent'
-        }, mouseDom);
+      mouseDom.style.borderTop = '80px solid #ccc';
+      mouseDom.style.borderLeft = '80px solid transparent';
+      mouseDom.style.borderRight = '80px solid transparent';
     }
     angry(mouseDom){
-        this.objVal({
-          border: '40px solid #d53a35',
-          borderRadius: '10%'
-        }, mouseDom);
+      mouseDom.style.border = '40px solid #d53a35';
+      mouseDom.style.borderRadius = '10%';
     }
     jiong(mouseDom){
         let deg = 10;
-        const leftDom = document.querySelector(`${this.className} .iclock .iclock-body .iclock-left-eyes`);
-        this.objVal({
-          transform: `rotate(${-deg}deg)`,
-          webkitTransform: `rotate(${-deg}deg)`
-        }, leftDom);
-        const rightDom = document.querySelector(`${this.className} .iclock .iclock-body .iclock-right-eyes`);
-        this.objVal({
-          transform: `rotate(${deg}deg)`,
-          webkitTransform: `rotate(${deg}deg)`
-        }, rightDom);
-        this.objVal({
-          border: '40px solid #e98f6f',
-          borderRadius: '10%',
-          left: '56px',
-          width: '10px'
-        }, mouseDom);
-    }
-    owo(mouseDom){
-      let height = '50px', width = '50px';
-      let bothObj = {
-        width: width,
-        height: height,
-        borderRadius: '50%'
-      }
-      const leftDom = document.querySelector(`${this.className} .iclock .iclock-body .iclock-left-eyes`);
-      this.objVal(bothObj, leftDom);
-      const rightDom = document.querySelector(`${this.className} .iclock .iclock-body .iclock-right-eyes`);
-      this.objVal(bothObj, rightDom);
-      this.objVal({
-        position: 'absolute',
-        left: '50%',
-        right: '50%',
-        transform: 'translate(-50%, -50%)',
-        fontSize: '5rem',
-        backgroundColor: '#22ade4',
-        width: '50%',
-        height: '5px'
-      }, mouseDom);
+        const leftDom = document.querySelector(`${this.state.className} .iclock .iclock-body .iclock-left-eyes`);
+        leftDom.style.transform = `rotate(${-deg}deg)`;
+        leftDom.style.webkitTransform = `rotate(${-deg}deg)`;
+        const rightDom = document.querySelector(`${this.state.className} .iclock .iclock-body .iclock-right-eyes`);
+        rightDom.style.transform = `rotate(${deg}deg)`;
+        rightDom.style.webkitTransform = `rotate(${deg}deg)`;
+        mouseDom.style.border = '40px solid #e98f6f';
+        mouseDom.style.borderRadius = '10%';
+        mouseDom.style.left = '56px';
+        mouseDom.style.width = '10px';
     }
 }
 
